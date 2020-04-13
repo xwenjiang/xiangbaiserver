@@ -18,6 +18,9 @@ const esSearch = async (index, str) => {
   await esClient
     .search({
       index: index,
+      from: 0,
+      size: 5,
+
       body: {
         query: {
           match: {
