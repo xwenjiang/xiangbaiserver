@@ -1,6 +1,6 @@
 const { Client } = require("@elastic/elasticsearch");
 const esClient = new Client({ node: "http://localhost:9200" });
-const add = (item) => {
+const esAdd = (item) => {
   return new Promise((resolve, reject) => {
     esClient
       .index({
@@ -12,6 +12,28 @@ const add = (item) => {
       });
   });
 };
+const esSearch = async (index, str) => {
+  let result;
+  console.log("essearch, index: ", index, ", str: ", str);
+  await esClient
+    .search({
+      index: index,
+      body: {
+        query: {
+          match: {
+            answer: {
+              query: str,
+            },
+          },
+        },
+      },
+    })
+    .then((chunk) => {
+      result = chunk.body.hits.hits;
+    });
+  return result;
+};
 module.exports = {
-  add: add,
+  esAdd: esAdd,
+  esSearch: esSearch,
 };
