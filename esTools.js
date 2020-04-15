@@ -1,20 +1,18 @@
 const { Client } = require("@elastic/elasticsearch");
 const esClient = new Client({ node: "http://localhost:9200" });
+const createIndex = require("./test");
 const esAdd = (item) => {
   return new Promise((resolve, reject) => {
-    esClient
-      .index({
-        index: item.dianpu,
-        body: item,
-      })
-      .then((result) => {
-        resolve(result);
-      });
+    createIndex(item).then(() => {
+      console.log("添加成功");
+
+      resolve();
+    });
   });
 };
 const esSearch = async (index, str) => {
   let result;
-  console.log("essearch, index: ", index, ", str: ", str);
+  //console.log("essearch, index: ", index, ", str: ", str);
   await esClient
     .search({
       index: index,
