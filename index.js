@@ -11,35 +11,37 @@ const result = os.networkInterfaces().en0[1].address;
 const addIndex = require("./test").addIndex;
 const addAnswer = require("./test").addAnswer;
 const searchIndex = require("./test").searchIndex;
-const getallindex = require("./test").getallindex;
-//console.log(result.en0[1].address);
+const getAllIndex = require("./test").getAllIndex;
 
 var app = express();
 var port = 4000;
-// create application/json parser
+
 var jsonParser = bodyParser.json();
 
-// create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-// POST /login gets urlencoded bodies
-
-// POST /api/users gets JSON bodies
 app.get("/getallindex", (req, res) => {
-  res.json(getallindex());
+  getAllIndex().then((data) => {
+    console.log(data);
+    res.json(data);
+    res.end();
+  });
 });
 app.post("/adddianpu", jsonParser, (req, res) => {
   searchIndex(req.body.dianpu).then((result) => {
     if (result) {
-      res.end("店铺已经存在");
+      res.send("店铺已经存在");
+      res.end();
     } else {
       addIndex(req.body.dianpu).then((e) => {
         console.log(e);
 
         if (e) {
           res.send("添加成功");
+          res.end();
         } else {
           res.send("添加失败");
+          res.end();
         }
       });
     }

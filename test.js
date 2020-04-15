@@ -6,8 +6,8 @@ async function getAllIndex() {
   let list = [];
   await client.indices.getAlias().then((res) => {
     let result = Object.getOwnPropertyNames(res.body);
-    console.log(result);
-    list = [...result];
+
+    list = result;
   });
   return list;
 }
