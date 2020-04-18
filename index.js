@@ -3,7 +3,10 @@ var bodyParser = require("body-parser");
 var esAdd = require("./esTools").esAdd;
 var esSearch = require("./esTools").esSearch;
 var esAdd = require("./esTools").esAdd;
-
+var elastic = require("@elastic/elasticsearch");
+var client = new elastic.Client({
+  node: "http://localhost:9200",
+});
 var userCount = 0;
 var addUserCount = 0;
 const os = require("os");
@@ -76,6 +79,27 @@ app.get("/api/search", (req, res) => {
   esSearch(dianpu, querystr).then((data) => {
     //console.log(data);
     res.json(data);
+  });
+});
+app.get("/delindex", (req, res) => {
+  let indexStr = req.query.index;
+
+  client.indices.exists({ index: indexStr }).then((e) => {
+    console.log(e.body);
+
+    if (e.body == false) {
+      res.end("不存在");
+    } else {
+      client.indices.delete({ index: indexStr }).then((result) => {
+        console.log(result);
+
+        if (result.statusCode == 200) {
+          res.end("删除成功");
+        } else {
+          res.end("删除失败");
+        }
+      });
+    }
   });
 });
 app.listen(port, () => {

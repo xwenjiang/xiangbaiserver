@@ -67,6 +67,7 @@ async function addAnswer(obj) {
     });
   return result;
 }
+
 module.exports = {
   addIndex: addIndex,
   addAnswer: addAnswer,
