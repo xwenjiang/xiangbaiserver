@@ -8,13 +8,10 @@ var client = new elastic.Client({
   node: "http://localhost:9200",
 });
 var userCount = 0;
-var addUserCount = 0;
-const os = require("os");
-const result = os.networkInterfaces()
+
 const addIndex = require("./test").addIndex;
 const addAnswer = require("./test").addAnswer;
 const searchIndex = require("./test").searchIndex;
-const getAllIndex = require("./test").getAllIndex;
 
 var app = express();
 var port = 4000;
@@ -23,14 +20,8 @@ var jsonParser = bodyParser.json();
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-app.get("/getallindex", (req, res) => {
-  getAllIndex().then((data) => {
-    console.log(data);
-    res.json(data);
-    res.end();
-  });
-});
 app.post("/adddianpu", jsonParser, (req, res) => {
+  req.body.dianpu = req.body.dianpu.replace(/\s+/g, "");
   searchIndex(req.body.dianpu).then((result) => {
     if (result) {
       res.send("店铺已经存在");
@@ -50,13 +41,29 @@ app.post("/adddianpu", jsonParser, (req, res) => {
     }
   });
 });
-app.post("/api/add", jsonParser, function (req, res) {
-  let item = req.body;
-  addAnswer(item).then((result) => {
-    if (result) {
-      res.send("添加成功");
+app.post("/api/addanswer", jsonParser, function (req, res) {
+  console.log(req.body);
+
+  let item = {
+    dianpu: req.body.dianpu.replace(/\s+/g, ""),
+    answer: req.body.answer.replace(/\s+/g, ""),
+  };
+  searchIndex(item.dianpu).then((e) => {
+    if (e == false) {
+      res.send("店铺不存在");
     } else {
-      res.send("添加失败");
+      client
+        .index({
+          index: item.dianpu,
+          body: {
+            answer: item.answer,
+          },
+        })
+        .then((result) => {
+          if (result.body.result === "created") {
+            res.send("添加成功");
+          }
+        });
     }
   });
 });
@@ -77,12 +84,11 @@ app.get("/api/search", (req, res) => {
   console.log(`用户询问语句：${req.query.querystr}`);
 
   esSearch(dianpu, querystr).then((data) => {
-    //console.log(data);
     res.json(data);
   });
 });
 app.get("/delindex", (req, res) => {
-  let indexStr = req.query.index;
+  let indexStr = req.query.index.replace(/\s+/g, "");
 
   client.indices.exists({ index: indexStr }).then((e) => {
     console.log(e.body);
@@ -103,5 +109,5 @@ app.get("/delindex", (req, res) => {
   });
 });
 app.listen(port, () => {
-  console.log(`服务器已经启动...Ip地址：${result}...端口号：${port}`);
+  console.log(`服务器已经启动......端口号：${port}`);
 });

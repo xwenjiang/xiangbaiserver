@@ -51,26 +51,10 @@ async function addIndex(indexName) {
     });
   return result;
 }
-async function addAnswer(obj) {
-  let result = false;
-
-  await client
-    .index({
-      index: obj.dianpu,
-      body: {
-        answer: obj.answer,
-      },
-    })
-
-    .then(() => {
-      result = true;
-    });
-  return result;
-}
 
 module.exports = {
   addIndex: addIndex,
-  addAnswer: addAnswer,
+
   searchIndex: searchIndex,
   getAllIndex: getAllIndex,
 };
