@@ -1,8 +1,8 @@
 var express = require("express");
 var bodyParser = require("body-parser");
-var esAdd = require("./esTools").esAdd;
+
 var esSearch = require("./esTools").esSearch;
-var esAdd = require("./esTools").esAdd;
+
 var elastic = require("@elastic/elasticsearch");
 var client = new elastic.Client({
   node: "http://localhost:9200",
