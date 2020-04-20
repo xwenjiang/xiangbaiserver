@@ -37,7 +37,7 @@ async function addIndex(indexName) {
           properties: {
             answer: {
               type: "text",
-              analyzer: "ik_max_word",
+              analyzer: "ik_smart ",
               search_analyzer: "ik_smart",
             },
           },

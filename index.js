@@ -19,6 +19,20 @@ var port = 4000;
 var jsonParser = bodyParser.json();
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
+app.get("/api/splite", (req, res) => {
+  let query = req.query;
+  client.indices
+    .analyze({
+      index: query.dianpu,
+      body: {
+        analyzer: "ik_smart",
+        text: req.query.text,
+      },
+    })
+    .then((e) => {
+      res.json(e);
+    });
+});
 app.get("/api/searchindex", jsonParser, (req, res) => {
   let query = req.query.dianpu.replace(/\s+/g, "");
   client.indices
