@@ -19,7 +19,21 @@ var port = 4000;
 var jsonParser = bodyParser.json();
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
+app.get("/api/searchindex", jsonParser, (req, res) => {
+  let query = req.query.dianpu.replace(/\s+/g, "");
+  client.indices
+    .exists({
+      index: query,
+    })
+    .then((e) => {
+      console.log(e);
 
+      if (e.statusCode == "404") res.send("不存在");
+      else {
+        res.send("店铺存在");
+      }
+    });
+});
 app.post("/adddianpu", jsonParser, (req, res) => {
   req.body.dianpu = req.body.dianpu.replace(/\s+/g, "");
   searchIndex(req.body.dianpu).then((result) => {
@@ -67,6 +81,29 @@ app.post("/api/addanswer", jsonParser, function (req, res) {
     }
   });
 });
+
+app.get("/allanswer", jsonParser, (req, res) => {
+  let query = req.query.dianpu.replace(/\s+/g, "");
+  console.log(query);
+
+  let answerList = [];
+  client
+    .search({
+      index: query,
+      body: {
+        query: {
+          match_all: {},
+        },
+      },
+    })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      console.log("发生了错误");
+    });
+});
+
 app.get("/", (req, res) => {
   res.send("test sucesss!!!");
   res.json(port);
