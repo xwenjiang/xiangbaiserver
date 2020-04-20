@@ -34,6 +34,20 @@ app.get("/api/searchindex", jsonParser, (req, res) => {
       }
     });
 });
+app.post("/api/delanswer", jsonParser, (req, res) => {
+  let id = req.body.id;
+  let dianpu = req.body.dianpu;
+  console.log(dianpu);
+
+  client
+    .delete({
+      id: id,
+      index: dianpu,
+    })
+    .then((e) => {
+      res.json(e);
+    });
+});
 app.post("/adddianpu", jsonParser, (req, res) => {
   req.body.dianpu = req.body.dianpu.replace(/\s+/g, "");
   searchIndex(req.body.dianpu).then((result) => {
