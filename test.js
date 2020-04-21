@@ -2,15 +2,7 @@ const elastic = require("@elastic/elasticsearch");
 const client = new elastic.Client({
   node: "http://localhost:9200",
 });
-async function getAllIndex() {
-  let list = [];
-  await client.indices.getAlias().then((res) => {
-    let result = Object.getOwnPropertyNames(res.body);
 
-    list = result;
-  });
-  return list;
-}
 async function searchIndex(indexname) {
   let result = false;
   await client.indices
@@ -56,5 +48,4 @@ module.exports = {
   addIndex: addIndex,
 
   searchIndex: searchIndex,
-  getAllIndex: getAllIndex,
 };

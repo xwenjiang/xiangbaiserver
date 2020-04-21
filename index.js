@@ -19,6 +19,12 @@ var port = 4000;
 var jsonParser = bodyParser.json();
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
+app.get("/api/indexlist", (req, res) => {
+  client.indices.getAlias().then((e) => {
+    let list = Object.keys(e.body);
+    res.json(list);
+  });
+});
 app.get("/api/splite", (req, res) => {
   let query = req.query;
   client.indices
