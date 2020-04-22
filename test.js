@@ -27,9 +27,12 @@ async function addIndex(indexName) {
       body: {
         mappings: {
           properties: {
+            keyword: {
+              type: "keyword",
+            },
             answer: {
               type: "text",
-              analyzer: "ik_smart ",
+              analyzer: "ik_smart",
               search_analyzer: "ik_smart",
             },
           },
