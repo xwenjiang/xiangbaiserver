@@ -125,6 +125,7 @@ app.get("/allanswer", jsonParser, (req, res) => {
     .search({
       index: query,
       body: {
+        size: 50,
         query: {
           match_all: {},
         },
