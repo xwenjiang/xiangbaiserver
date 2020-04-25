@@ -12,7 +12,8 @@ var userCount = 0;
 const addIndex = require("./test").addIndex;
 const addAnswer = require("./test").addAnswer;
 const searchIndex = require("./test").searchIndex;
-
+const getallindex = require("./getallIndex").getallIndex;
+const delIndex = require("./getallIndex").delIndex;
 var app = express();
 var port = 4000;
 
@@ -20,9 +21,15 @@ var jsonParser = bodyParser.json();
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.get("/api/indexlist", (req, res) => {
-  client.indices.getAlias().then((e) => {
-    let list = Object.keys(e.body);
-    res.json(list);
+  getallindex().then((result) => {
+    console.log(result);
+    res.json(result);
+  });
+});
+app.post("/api/delindex", (req, res) => {
+  let name = req.query.name;
+  delIndex(name).then((e) => {
+    res.json(e.body);
   });
 });
 app.get("/api/splite", (req, res) => {
