@@ -1,5 +1,13 @@
+require('dotenv').config();
+
 var express = require("express");
 var bodyParser = require("body-parser");
+const session = require('express-session');
+const SessionStore = require('express-mysql-session');
+const passport = require('passport');
+const mysql = require('mysql');
+
+require('./passport');
 
 var esSearch = require("./esTools").esSearch;
 
@@ -20,6 +28,52 @@ var port = 4000;
 var jsonParser = bodyParser.json();
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
+
+// Setup session
+const MySQLStore = SessionStore(session);
+const sessionStore = new MySQLStore({}, mysql.createConnection(process.env.MYSQL_URL));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(session({
+  name: 'xiangbai',
+  secret: 'xiangbai-server',
+  resave: false,
+  saveUninitialized: false,
+  rolling: true,
+  cookie: {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    sameSite: true
+  },
+  store: sessionStore,
+}));
+
+app.post('/login', (req, res, next) => {
+  return new Promise((resolve, reject) => {
+    passport.authenticate('local-user', { session: false }, (err, user, info) => {
+      if (err) {
+        return reject(err);
+      }
+      if (!user) {
+        const error = new Error(info.message);
+        error.status = 401;
+        return reject(error);
+      }
+      return req.login(user, (loginErr) => {
+        if (loginErr) {
+          return reject(loginErr);
+        }
+        return resolve('login ok');
+      });
+    })(req);
+  })
+    .then((result) => {
+      res.json(result);
+    })
+    .catch(next);
+})
+
 app.get("/api/indexlist", (req, res) => {
   getallindex().then((result) => {
     console.log(result);
