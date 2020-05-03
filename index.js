@@ -1,13 +1,13 @@
-require('dotenv').config();
+require("dotenv").config();
 
 var express = require("express");
 var bodyParser = require("body-parser");
-const session = require('express-session');
-const SessionStore = require('express-mysql-session');
-const passport = require('passport');
-const mysql = require('mysql');
+const session = require("express-session");
+const SessionStore = require("express-mysql-session");
+const passport = require("passport");
+const mysql = require("mysql");
 
-require('./passport');
+require("./passport");
 
 var esSearch = require("./esTools").esSearch;
 
@@ -24,6 +24,14 @@ const getallindex = require("./getallIndex").getallIndex;
 const delIndex = require("./getallIndex").delIndex;
 var app = express();
 var port = 4000;
+var mysqlOption = {
+  host: "localhost",
+  user: "root",
+  password: "12345678",
+  database: "xiangbai",
+  port: 3306,
+  useConnectionPooling: true,
+};
 
 var jsonParser = bodyParser.json();
 
@@ -31,48 +39,54 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 // Setup session
 const MySQLStore = SessionStore(session);
-const sessionStore = new MySQLStore({}, mysql.createConnection(process.env.MYSQL_URL));
+const sessionStore = new MySQLStore({}, mysql.createConnection(mysqlOption));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(session({
-  name: 'xiangbai',
-  secret: 'xiangbai-server',
-  resave: false,
-  saveUninitialized: false,
-  rolling: true,
-  cookie: {
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    sameSite: true
-  },
-  store: sessionStore,
-}));
+app.use(
+  session({
+    name: "xiangbai",
+    secret: "xiangbai-server",
+    resave: false,
+    saveUninitialized: false,
+    rolling: true,
+    cookie: {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      sameSite: true,
+    },
+    store: sessionStore,
+  })
+);
 
-app.post('/login', (req, res, next) => {
+app.post("/login", (req, res, next) => {
   return new Promise((resolve, reject) => {
-    passport.authenticate('local-user', { session: false }, (err, user, info) => {
-      if (err) {
-        return reject(err);
-      }
-      if (!user) {
-        const error = new Error(info.message);
-        error.status = 401;
-        return reject(error);
-      }
-      return req.login(user, (loginErr) => {
-        if (loginErr) {
-          return reject(loginErr);
+    passport.authenticate(
+      "local-user",
+      { session: false },
+      (err, user, info) => {
+        if (err) {
+          return reject(err);
         }
-        return resolve('login ok');
-      });
-    })(req);
+        if (!user) {
+          const error = new Error(info.message);
+          error.status = 401;
+          return reject(error);
+        }
+        return req.login(user, (loginErr) => {
+          if (loginErr) {
+            return reject(loginErr);
+          }
+          return resolve("login ok");
+        });
+      }
+    )(req);
   })
     .then((result) => {
       res.json(result);
     })
     .catch(next);
-})
+});
 
 app.get("/api/indexlist", (req, res) => {
   getallindex().then((result) => {
