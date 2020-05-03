@@ -1,12 +1,45 @@
-require("dotenv").config();
+// Update with your config settings.
 
 module.exports = {
-  client: "mysql",
-  // connection: process.env.MYSQL_URL,
-  connection: {
-    host: "127.0.0.1",
-    user: "root",
-    password: "12345678",
-    database: "xiangbai",
+  development: {
+    client: "mysql",
+    connection: {
+      host: "127.0.0.1",
+      user: "root",
+      password: "12345678",
+      database: "xiangbai",
+    },
+  },
+
+  staging: {
+    client: "mysql",
+    connection: {
+      database: "xiangbai",
+      user: "root",
+      password: "12345678",
+    },
+    pool: {
+      min: 2,
+      max: 10,
+    },
+    migrations: {
+      tableName: "knex_migrations",
+    },
+  },
+
+  production: {
+    client: "mysql",
+    connection: {
+      database: "xiangbai",
+      user: "root",
+      password: "12345678",
+    },
+    pool: {
+      min: 2,
+      max: 10,
+    },
+    migrations: {
+      tableName: "knex_migrations",
+    },
   },
 };
