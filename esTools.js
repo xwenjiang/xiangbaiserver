@@ -15,7 +15,7 @@ const esSearch = async (index, str) => {
           match: {
             answer: {
               query: str,
-              analyzer: "ik_smart",
+              analyzer: "ik_max_word",
             },
           },
         },

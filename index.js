@@ -75,9 +75,11 @@ app.post("/login", (req, res, next) => {
         }
         return req.login(user, (loginErr) => {
           if (loginErr) {
-            return reject(loginErr);
+            return resolve(loginErr);
           }
-          return resolve("login ok");
+          console.log("#####user is :", user);
+
+          return resolve(user);
         });
       }
     )(req);
@@ -90,7 +92,6 @@ app.post("/login", (req, res, next) => {
 
 app.get("/api/indexlist", (req, res) => {
   getallindex().then((result) => {
-    console.log(result);
     res.json(result);
   });
 });
@@ -132,7 +133,6 @@ app.get("/api/searchindex", jsonParser, (req, res) => {
 app.post("/api/delanswer", jsonParser, (req, res) => {
   let id = req.body.id;
   let dianpu = req.body.dianpu;
-  console.log(dianpu);
 
   client
     .delete({
