@@ -109,7 +109,7 @@ app.get("/api/splite", (req, res) => {
     .analyze({
       index: query.dianpu,
       body: {
-        analyzer: "ik_smart",
+        analyzer: "ik_max_word",
         text: req.query.text,
       },
     })
