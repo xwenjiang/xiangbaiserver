@@ -40,7 +40,7 @@ async function addIndex(indexName) {
       },
     })
     .then((res) => {
-      console.log(res);
+     
 
       result = true;
     });

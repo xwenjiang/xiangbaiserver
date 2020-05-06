@@ -3,7 +3,7 @@ const { Strategy } = require("passport-local");
 const { getKnex } = require("../db");
 
 const knex = getKnex();
-console.log("###indexjs->knex", knex);
+
 passport.serializeUser((user, done) => {
   done(null, { id: user.id });
 });

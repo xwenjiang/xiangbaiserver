@@ -79,7 +79,7 @@ app.post("/login", (req, res, next) => {
           if (loginErr) {
             return resolve(loginErr);
           }
-          console.log("#####user is :", user);
+         
 
           return resolve(user);
         });
@@ -124,7 +124,7 @@ app.get("/api/searchindex", jsonParser, (req, res) => {
       index: query,
     })
     .then((e) => {
-      console.log(e);
+
 
       if (e.statusCode == "404") res.send("不存在");
       else {
@@ -153,7 +153,7 @@ app.post("/adddianpu", jsonParser, (req, res) => {
       res.end();
     } else {
       addIndex(req.body.dianpu).then((e) => {
-        console.log(e);
+       
 
         if (e) {
           res.send("添加成功");
@@ -167,7 +167,7 @@ app.post("/adddianpu", jsonParser, (req, res) => {
   });
 });
 app.post("/api/addanswer", jsonParser, function (req, res) {
-  console.log(req.body);
+  
 
   let item = {
     dianpu: req.body.dianpu.replace(/\s+/g, ""),
@@ -195,7 +195,7 @@ app.post("/api/addanswer", jsonParser, function (req, res) {
 
 app.get("/allanswer", jsonParser, (req, res) => {
   let query = req.query.dianpu.replace(/\s+/g, "");
-  console.log(query);
+
 
   let answerList = [];
   client
@@ -212,17 +212,17 @@ app.get("/allanswer", jsonParser, (req, res) => {
       res.send(data);
     })
     .catch((err) => {
-      console.log("发生了错误");
+      
     });
 });
 
 app.get("/api/search", (req, res) => {
   userCount = userCount + 1;
-  console.log(`新用户访问：${req.ip}查找次数：${userCount}`);
+  
 
   let dianpu = req.query.dianpu;
   let querystr = req.query.querystr;
-  console.log(req.query);
+
 
   console.log(`用户询问：店铺:${req.query.dianpu}`);
   console.log(`用户询问语句：${req.query.querystr}`);
@@ -235,13 +235,13 @@ app.get("/delindex", (req, res) => {
   let indexStr = req.query.index.replace(/\s+/g, "");
 
   client.indices.exists({ index: indexStr }).then((e) => {
-    console.log(e.body);
+    
 
     if (e.body == false) {
       res.end("不存在");
     } else {
       client.indices.delete({ index: indexStr }).then((result) => {
-        console.log(result);
+   
 
         if (result.statusCode == 200) {
           res.end("删除成功");

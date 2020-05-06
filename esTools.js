@@ -3,7 +3,7 @@ const esClient = new Client({ node: "http://localhost:9200" });
 
 const esSearch = async (index, str) => {
   let result;
-  //console.log("essearch, index: ", index, ", str: ", str);
+
   await esClient
     .search({
       index: index,
