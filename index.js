@@ -6,7 +6,7 @@ const session = require("express-session");
 const SessionStore = require("express-mysql-session");
 const passport = require("passport");
 const mysql = require("mysql");
-
+var path = require("path");
 require("./passport");
 
 var esSearch = require("./esTools").esSearch;
@@ -40,10 +40,12 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 // Setup session
 const MySQLStore = SessionStore(session);
 const sessionStore = new MySQLStore({}, mysql.createConnection(mysqlOption));
-
+app.use(express.static("build"));
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 app.use(
   session({
     name: "xiangbai",
@@ -214,11 +216,6 @@ app.get("/allanswer", jsonParser, (req, res) => {
     });
 });
 
-app.get("/", (req, res) => {
-  res.send("test sucesss!!!");
-  res.json(port);
-  res.end();
-});
 app.get("/api/search", (req, res) => {
   userCount = userCount + 1;
   console.log(`新用户访问：${req.ip}查找次数：${userCount}`);
