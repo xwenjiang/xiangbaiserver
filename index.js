@@ -79,7 +79,6 @@ app.post("/login", (req, res, next) => {
           if (loginErr) {
             return resolve(loginErr);
           }
-         
 
           return resolve(user);
         });
@@ -124,8 +123,6 @@ app.get("/api/searchindex", jsonParser, (req, res) => {
       index: query,
     })
     .then((e) => {
-
-
       if (e.statusCode == "404") res.send("不存在");
       else {
         res.send("店铺存在");
@@ -153,8 +150,6 @@ app.post("/adddianpu", jsonParser, (req, res) => {
       res.end();
     } else {
       addIndex(req.body.dianpu).then((e) => {
-       
-
         if (e) {
           res.send("添加成功");
           res.end();
@@ -167,8 +162,6 @@ app.post("/adddianpu", jsonParser, (req, res) => {
   });
 });
 app.post("/api/addanswer", jsonParser, function (req, res) {
-  
-
   let item = {
     dianpu: req.body.dianpu.replace(/\s+/g, ""),
     answer: req.body.answer.replace(/\s+/g, ""),
@@ -196,33 +189,30 @@ app.post("/api/addanswer", jsonParser, function (req, res) {
 app.get("/allanswer", jsonParser, (req, res) => {
   let query = req.query.dianpu.replace(/\s+/g, "");
 
-
   let answerList = [];
   client
     .search({
       index: query,
       body: {
-        size: 500,
+        size: 1000,
         query: {
           match_all: {},
         },
       },
     })
     .then((data) => {
+      console.log("服务器返回的总数据：", data);
+
       res.send(data);
     })
-    .catch((err) => {
-      
-    });
+    .catch((err) => {});
 });
 
 app.get("/api/search", (req, res) => {
   userCount = userCount + 1;
-  
 
   let dianpu = req.query.dianpu;
   let querystr = req.query.querystr;
-
 
   console.log(`用户询问：店铺:${req.query.dianpu}`);
   console.log(`用户询问语句：${req.query.querystr}`);
@@ -235,14 +225,10 @@ app.get("/delindex", (req, res) => {
   let indexStr = req.query.index.replace(/\s+/g, "");
 
   client.indices.exists({ index: indexStr }).then((e) => {
-    
-
     if (e.body == false) {
       res.end("不存在");
     } else {
       client.indices.delete({ index: indexStr }).then((result) => {
-   
-
         if (result.statusCode == 200) {
           res.end("删除成功");
         } else {
