@@ -201,7 +201,7 @@ app.get("/allanswer", jsonParser, (req, res) => {
       },
     })
     .then((data) => {
-      console.log("服务器返回的总数据：", data);
+      console.log("服务器返回的总数据：", data.hits);
 
       res.send(data);
     })
