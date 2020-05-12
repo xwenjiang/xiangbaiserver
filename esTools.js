@@ -8,7 +8,7 @@ const esSearch = async (index, str) => {
     .search({
       index: index,
       from: 0,
-      size: 5,
+      size: 500,
 
       body: {
         query: {

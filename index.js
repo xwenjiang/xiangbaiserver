@@ -202,7 +202,7 @@ app.get("/allanswer", jsonParser, (req, res) => {
     .search({
       index: query,
       body: {
-        size: 50,
+        size: 500,
         query: {
           match_all: {},
         },

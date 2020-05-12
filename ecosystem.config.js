@@ -4,7 +4,6 @@ module.exports = {
       name: "xiangbai",
       script: "index.js",
       cwd: "./",
-      watch: true,
       ignore_watch: [
         // 不用监听的文件
         "node_modules",
